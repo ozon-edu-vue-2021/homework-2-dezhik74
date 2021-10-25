@@ -1,21 +1,16 @@
 <template>
   <div id="app">
-    <!-- <div v-show="false">
-      <h2 >Файловая система </h2>
-      <fsItem
-        :subSystem="initialDir"
-      />
-    </div> -->
     <div>
       <h2 >Файловая система </h2>
-      <basket 
-        v-on:clear-basket="basket.splice(0,basket.length)"
-        :basket="basket"
+      <hr>
+      <fs-selection
+        :selectedFile="selectedFile"
       />
       <fs-directory
         :directoryContent="initialDir"
         :visible="true"
         v-on:select-file="selectHandler"
+        v-on:unselect-file="unselectHandler"
       />
 
     </div>
@@ -27,11 +22,10 @@
 <script>
 
 import fileSystem from '../public/static/node_modules.json'
-// import fsItem from './components/fsItem.vue'
 import fsDirectory from "./components/fsDirectory.vue";
-import Basket from './components/Basket.vue'
+import fsSelection from './components/fsSelection.vue'
 
-
+// Нужны для отладки - сокращают кол-во папок
 // const firtsDirs = fileSystem.contents.slice(0,3)
 let fSys = fileSystem
 // fSys.contents=firtsDirs
@@ -40,19 +34,30 @@ let fSys = fileSystem
 export default {
   name: 'App',
   components: {
-    // fsItem, 
     fsDirectory,
-    Basket
+    fsSelection
   },
   data () {
     return {
       initialDir: fSys,
-      basket: []
+      selectedFile: '',
+      selectedFileComponent: {}
     }
   },
   methods: {
-    selectHandler: function(path) {
-      this.basket.push(path);
+    selectHandler: function(path, newSelectedFileComponent) {
+      if (this.selectedFile != '') {
+        console.log("old file: " + this.selectedFileComponent.fileContent.name)
+        this.selectedFileComponent.unselect();
+      }
+      this.selectedFileComponent=newSelectedFileComponent;
+      console.log("new file: " + this.selectedFileComponent.fileContent.name)
+      this.selectedFile =path;
+    },
+    unselectHandler: function() {
+      this.selectedFileComponent.unselect();
+      this.selectedFileComponent = {}
+      this.selectedFile=''
     }
   }
 }
@@ -65,5 +70,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
   margin-top: 60px;
+  max-width: 800px;
 }
 </style>

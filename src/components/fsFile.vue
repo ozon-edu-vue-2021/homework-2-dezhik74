@@ -1,10 +1,11 @@
 <template>
-    <div 
-        @click="$emit('select-file', fileContent.name)" 
-        class="file-link">
+    <button 
+        @click="clickHandler" 
+        class="file-link"
+        :class="{ file__selected:isSelected }">
             <img :src="fileContent.type === 'file' ? fileImg : linkImg">
             {{fileContent.name}}
-    </div>
+    </button>
 </template>
 
 <script>
@@ -22,8 +23,22 @@ export default {
     data () {
         return {
             fileImg: fileImg,
-            linkImg: linkImg
+            linkImg: linkImg,
+            isSelected: false,
         }
+    },
+    methods: {
+        clickHandler: function () {
+            if (!this.isSelected) {
+                this.isSelected = true;
+                this.$emit('select-file', this.fileContent.name, this);
+            } else {
+                this.$emit('unselect-file')
+            }
+        },
+        unselect () {
+            this.isSelected = false
+        },
     }
 }
 </script>
@@ -31,5 +46,14 @@ export default {
 <style scoped>
 .file-link {
     cursor: pointer;
+    border: 0;
+    font: inherit;
+    font-size: 16px;
+    background-color: white;
+    margin-bottom: 3px;
+}
+
+.file__selected {
+    background-color: aqua;
 }
 </style>
