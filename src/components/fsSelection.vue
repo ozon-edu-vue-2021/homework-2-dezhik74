@@ -19,7 +19,7 @@ export default {
     },
     computed: {
         isFull() {
-            return this.selectedFile !=''
+            return !(this.selectedFile ==='')
         }
     }
 }

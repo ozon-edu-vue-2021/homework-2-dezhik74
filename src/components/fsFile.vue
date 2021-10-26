@@ -18,26 +18,31 @@ export default {
         fileContent: {
             type: Object,
             default: () => {}
+        },
+        uniqueID : {
+            type: Number,
+            default: 0
         }
     },
+    inject: ['selectedFileIDWrapper'],
     data () {
         return {
             fileImg: fileImg,
             linkImg: linkImg,
-            isSelected: false,
+        }
+    },
+    computed: {
+        isSelected: function (){
+            return this.uniqueID === this.selectedFileIDWrapper.id
         }
     },
     methods: {
         clickHandler: function () {
             if (!this.isSelected) {
-                this.isSelected = true;
-                this.$emit('select-file', this.fileContent.name, this);
+                this.$emit('select-file', this.fileContent.name, this.uniqueID);
             } else {
                 this.$emit('unselect-file')
             }
-        },
-        unselect () {
-            this.isSelected = false
         },
     }
 }

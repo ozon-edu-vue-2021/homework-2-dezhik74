@@ -25,10 +25,15 @@ import fileSystem from '../public/static/node_modules.json'
 import fsDirectory from "./components/fsDirectory.vue";
 import fsSelection from './components/fsSelection.vue'
 
-// Нужны для отладки - сокращают кол-во папок
-// const firtsDirs = fileSystem.contents.slice(0,3)
+
 let fSys = fileSystem
-// fSys.contents=firtsDirs
+
+// Для отладки иставим переменную в true - сокращаем кол-во папок
+const debug = false;
+if (debug) {
+  const firtsDirs = fileSystem.contents.slice(0,3)
+  fSys.contents=firtsDirs
+}
 
 
 export default {
@@ -41,23 +46,22 @@ export default {
     return {
       initialDir: fSys,
       selectedFile: '',
-      selectedFileComponent: {}
+      selectedFileIDWrapper: {id: 0},
+    }
+  },
+  provide() {
+    return {
+      selectedFileIDWrapper: this.selectedFileIDWrapper
     }
   },
   methods: {
-    selectHandler: function(path, newSelectedFileComponent) {
-      if (this.selectedFile != '') {
-        console.log("old file: " + this.selectedFileComponent.fileContent.name)
-        this.selectedFileComponent.unselect();
-      }
-      this.selectedFileComponent=newSelectedFileComponent;
-      console.log("new file: " + this.selectedFileComponent.fileContent.name)
+    selectHandler: function(path, newSelectedFileID) {
+      this.selectedFileIDWrapper.id=newSelectedFileID;
       this.selectedFile =path;
     },
     unselectHandler: function() {
-      this.selectedFileComponent.unselect();
-      this.selectedFileComponent = {}
       this.selectedFile=''
+      this.selectedFileIDWrapper.id=0;
     }
   }
 }

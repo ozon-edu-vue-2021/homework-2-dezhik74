@@ -16,6 +16,7 @@
                     />
                     <fs-file v-else-if='(elem.type === "file" || elem.type === "link") && visibleChild'
                         :fileContent="elem"
+                        :uniqueID="getID()"
                         v-on:unselect-file="unselectHandler"
                         v-on:select-file="selectFileHandler"
                     />
@@ -29,6 +30,8 @@
 
 import fsFile from './fsFile.vue'
 import imgFolder from '../assets/folder_black_18dp.svg'
+
+let uinqueIDInitialezer = 1;
 
 export default {
     name: 'fsDirectory',
@@ -56,14 +59,17 @@ export default {
         clickHandler: function () {
             this.visibleChild = ! this.visibleChild
         },
-        selectFileHandler: function (path, fileComponent) {
+        selectFileHandler: function (path, newSelectedFileID) {
             const result=this.directoryContent.name + '/' + path;
-            this.$emit('select-file', result, fileComponent)
+            this.$emit('select-file', result, newSelectedFileID)
         },
         unselectHandler: function () {
-            console.log('DIR - unselect')
             this.$emit('unselect-file')
         },
+        getID: function () {
+            uinqueIDInitialezer++;
+            return uinqueIDInitialezer
+        }
     }
 
 }
